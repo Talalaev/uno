@@ -1,0 +1,41 @@
+<h1 class="d-flex justify-content-between align-items-center">
+  <span>Создать игру</span>
+  <span class="mat-small">{{ createData | date:"HH:mm, dd.MM.yyyy" }}</span>
+</h1>
+<mat-dialog-content>
+  <form [formGroup]="gameForm" class="d-flex">
+    <mat-form-field appearance="legacy" class="flex-fill mr-2">
+      <mat-label>Имя игры</mat-label>
+      <input
+        cdkFocusInitial
+        matInput
+        required
+        autocomplete="off"
+        formControlName="gameName">
+      <mat-error *ngIf="gameName.errors && gameName.errors.minlength">
+        Минимальная длинна 4 символа
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="legacy" class="flex-fill">
+      <mat-label>Имя игрока</mat-label>
+      <input
+        matInput
+        required
+        autocomplete="off"
+        formControlName="playerName">
+      <mat-error *ngIf="playerName.errors && playerName.errors.minlength">
+        Минимальная длинна 4 символа
+      </mat-error>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button
+    mat-button
+    mat-dialog-close>Выйти</button>
+  <button
+    mat-button
+    [mat-dialog-close]="gameForm.value"
+    [disabled]="!gameForm.valid"
+    color="primary">Создать</button>
+</mat-dialog-actions>
