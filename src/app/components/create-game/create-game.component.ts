@@ -8,8 +8,9 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 })
 export class CreateGameComponent implements OnInit {
   gameForm = new FormGroup({
-    gameName: new FormControl('Первая', Validators.minLength(4)),
-    playerName: new FormControl('Миша', Validators.minLength(4)),
+    gameName: new FormControl('Новая игра', Validators.minLength(4)),
+    gamePlace: new FormControl('Новое место', Validators.minLength(4)),
+    playersCount: new FormControl('3', Validators.required),
     createData: new FormControl(new Date())
   });
 
@@ -19,8 +20,12 @@ export class CreateGameComponent implements OnInit {
     return this.gameForm.get('gameName');
   }
 
-  get playerName() {
-    return this.gameForm.get('playerName');
+  get gamePlace() {
+    return this.gameForm.get('gamePlace');
+  }
+
+  get playersCount() {
+    return this.gameForm.get('playersCount');
   }
 
   get createData() {

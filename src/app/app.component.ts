@@ -7,14 +7,15 @@ import { filter } from 'rxjs/operators';
 interface IGame {
   name?: string;
   data?: Date;
+  place?: string;
   players?: Array<IPlayer>;
-  rounds: Array<{id: number}>;
+  rounds?: Array<{id: number}>;
 }
 
 interface IPlayer {
   id: number;
   name?: string;
-  rounds: {[roundID: number]: {id: number; score: number}};
+  rounds?: {[roundID: number]: {id: number; score: number}};
 }
 
 @Component({
@@ -40,26 +41,29 @@ export class AppComponent {
         this.createGame({
           name: v.gameName,
           date: v.createDate,
-          player: { id: 1, name: v.playerName }
+          place: v.gamePlace,
+          playersCount: v.playersCount
         });
       });
   }
 
-  createGame({name, date, player}): void {
+  createGame({name, date, place, playersCount}): void {
     this.game.name = name;
     this.game.date = date;
+    this.game.place = place;
     this.game.players = [];
-    this.game.rounds = [{id: 1}, {id: 2}];
-    this.addPlayer(player);
+    this.game.rounds = [];
+
+    for (let i = 1; i <= playersCount; i++) {
+      this.addPlayer({
+        id: i,
+        name: `нет имени ${i}`,
+        rounds: {}
+      });
+    }
   }
 
   addPlayer(player): void {
-    this.game.players.push({
-      ...player,
-      rounds: {
-        1: {score: 0},
-        2: {score: 20}
-      }
-    });
+    this.game.players.push(player);
   }
 }
