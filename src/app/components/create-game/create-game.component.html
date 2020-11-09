@@ -3,40 +3,56 @@
   <span class="mat-small">{{ createData | date:"HH:mm, dd.MM.yyyy" }}</span>
 </h1>
 <mat-dialog-content>
-  <form [formGroup]="gameForm" class="d-flex">
-    <mat-form-field appearance="legacy" class="flex-fill">
-      <mat-label>Имя игры</mat-label>
-      <input
-        cdkFocusInitial
-        matInput
-        required
-        autocomplete="off"
-        formControlName="gameName">
-      <mat-error *ngIf="gameName.errors && gameName.errors.minlength">
-        Минимальная длинна 4 символа
-      </mat-error>
-    </mat-form-field>
-    <mat-form-field appearance="legacy" class="flex-fill mx-2">
-      <mat-label>Место проведения</mat-label>
-      <input
-        matInput
-        required
-        autocomplete="off"
-        formControlName="gamePlace">
-      <mat-error *ngIf="gamePlace.errors && gamePlace.errors.required">
-        Минимальная длинна 4 символа
-      </mat-error>
-    </mat-form-field>
-    <mat-form-field appearance="legacy">
-      <mat-select required formControlName="playersCount" [value]="playersCount.value">
-        <mat-option value="3">3</mat-option>
-        <mat-option value="4">4</mat-option>
-        <mat-option value="5">5</mat-option>
-        <mat-option value="6">6</mat-option>
-        <mat-option value="7">7</mat-option>
-        <mat-option value="8">8</mat-option>
-      </mat-select>
-    </mat-form-field>
+  <form [formGroup]="gameForm">
+    <div class="d-flex">
+      <mat-form-field appearance="legacy" class="flex-fill mr-2">
+        <mat-label>Имя игры</mat-label>
+        <input
+          cdkFocusInitial
+          matInput
+          required
+          autocomplete="off"
+          formControlName="gameName">
+        <mat-error *ngIf="gameName.errors && gameName.errors.minlength">
+          Минимальная длинна 4 символа
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="legacy" class="flex-fill">
+        <mat-label>Место проведения</mat-label>
+        <input
+          matInput
+          required
+          autocomplete="off"
+          formControlName="gamePlace">
+        <mat-error *ngIf="gamePlace.errors && gamePlace.errors.required">
+          Минимальная длинна 4 символа
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="d-flex">
+      <mat-form-field appearance="legacy" class="flex-fill mr-2">
+        <mat-label>Играем до</mat-label>
+        <input
+          matInput
+          required
+          autocomplete="off"
+          formControlName="gamePlayUntil">
+        <mat-error *ngIf="gamePlayUntil.errors && gamePlayUntil.errors.required">
+          Поле обязательно для заполнения
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="legacy" class="flex-fill">
+        <mat-label>Количество игроков</mat-label>
+        <mat-select required formControlName="playersCount" [value]="playersCount.value">
+          <mat-option value="3">3</mat-option>
+          <mat-option value="4">4</mat-option>
+          <mat-option value="5">5</mat-option>
+          <mat-option value="6">6</mat-option>
+          <mat-option value="7">7</mat-option>
+          <mat-option value="8">8</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
   </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">

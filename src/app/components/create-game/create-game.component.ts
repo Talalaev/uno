@@ -11,6 +11,7 @@ export class CreateGameComponent implements OnInit {
     gameName: new FormControl('Новая игра', Validators.minLength(4)),
     gamePlace: new FormControl('Новое место', Validators.minLength(4)),
     playersCount: new FormControl('3', Validators.required),
+    gamePlayUntil: new FormControl('1000', Validators.required),
     createData: new FormControl(new Date())
   });
 
@@ -26,6 +27,10 @@ export class CreateGameComponent implements OnInit {
 
   get playersCount() {
     return this.gameForm.get('playersCount');
+  }
+
+  get gamePlayUntil() {
+    return this.gameForm.get('gamePlayUntil');
   }
 
   get createData() {
