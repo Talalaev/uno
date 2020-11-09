@@ -10,12 +10,15 @@ interface IGame {
   place?: string;
   players?: Array<IPlayer>;
   rounds?: Array<{id: number}>;
+  playUntil?: number;
+  isFinished?: boolean;
 }
 
 interface IPlayer {
   id: number;
   name?: string;
   rounds?: {[roundID: number]: {id: number; score: number}};
+  totalScore?: 0;
 }
 
 @Component({
@@ -24,11 +27,17 @@ interface IPlayer {
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  game: any = {};
+  game: any = {
+    isFinished: false,
+  };
 
   constructor(
     public dialog: MatDialog
   ) {}
+
+  // get gameTotal() {
+  //   return this.game.players.
+  // }
 
   public onCreateGame(): void {
     this.dialog.open(CreateGameComponent, {
@@ -40,19 +49,21 @@ export class AppComponent {
       .subscribe(v => {
         this.createGame({
           name: v.gameName,
-          date: v.createDate,
+          date: v.createData,
           place: v.gamePlace,
-          playersCount: v.playersCount
+          playersCount: v.playersCount,
+          playUntil: v.gamePlayUntil
         });
       });
   }
 
-  createGame({name, date, place, playersCount}): void {
+  createGame({name, date, place, playersCount, playUntil}): void {
     this.game.name = name;
     this.game.date = date;
     this.game.place = place;
     this.game.players = [];
     this.game.rounds = [];
+    this.game.playUntil = playUntil;
 
     for (let i = 1; i <= playersCount; i++) {
       this.addPlayer({
@@ -65,5 +76,28 @@ export class AppComponent {
 
   addPlayer(player): void {
     this.game.players.push(player);
+  }
+
+  onStartGame(): void {
+    this.nextRound();
+  }
+
+  nextRound(): void {
+    const nextRoundID = this.game.rounds.length + 1;
+    this.game.rounds.push({id: nextRoundID});
+    this.game.players.forEach(player => player.rounds[nextRoundID] = {id: nextRoundID, score: 0});
+
+    this.updatePlayersTotalScore();
+  }
+
+  updatePlayersTotalScore(): void {
+    this.game.players
+      .forEach(player => {
+        player.totalScore = Object.keys(player.rounds)
+          .map(index => player.rounds[index])
+          .reduce((total, next) => {
+            return total = total + Number(next.score);
+          }, 0);
+      });
   }
 }

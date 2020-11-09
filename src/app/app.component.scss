@@ -8,4 +8,25 @@
       width: 30%;
     }
   }
+
+  table > thead > tr > th:first-child {
+    min-width: 80px;
+  }
+
+  input {
+    border: transparent;
+    width: 100%;
+    background: transparent;
+    border: transparent;
+    padding: 0;
+
+    &:focus, &:active {
+      border: transparent;
+      outline: transparent;
+    }
+  }
+
+  .table-dark input {
+    color: #fff;
+  }
 }

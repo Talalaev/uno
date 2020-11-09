@@ -5,32 +5,89 @@
       alt="Angular Logo"
       src="../assets/uno-logo.png"
     />
-    <h2>Новая игра!</h2>
-    <button (click)="onCreateGame()" mat-raised-button color="accent">Создать</button>
+    <div class="mt-4">
+      <button (click)="onCreateGame()" mat-raised-button color="accent">Создать</button>
+    </div>
   </div>
 
   <div *ngIf="game.players" class="uno-game">
-    <h2 class="d-flex justify-content-between align-items-center">
-      <span>{{ game.name }}</span>
-      <button mat-stroked-button color="primary">
-        Добавить игрока
-      </button>
-    </h2>
-    <input type="text" [(ngModel)]="game.name">
-    <table>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2>
+        <span>{{ game.name }}</span>
+        <span class="mat-small ml-2">{{ game.date | date:"HH:mm, dd.MM.yyyy" }}</span>
+      </h2>
+      <div>
+        <button
+          *ngIf="game.rounds.length === 0"
+          mat-flat-button
+          (click)="onStartGame()"
+          color="primary">
+          Начать
+        </button>
+        <button
+          *ngIf="game.rounds.length"
+          mat-flat-button
+          (click)="nextRound()"
+          color="accent"
+          class="mr-2">
+          Следующий раунд
+        </button>
+        <button
+          *ngIf="game.rounds.length"
+          mat-flat-button
+          color="warn">
+          Завершить
+        </button>
+      </div>
+    </div>
+    <h3 *ngIf="game.rounds.length" class="text-center">
+      <b>Текущий раунд</b>
+    </h3>
+    <table *ngIf="game.rounds.length" class="table">
+      <thead>
+        <tr class="table-active">
+          <th>№</th>
+          <th *ngFor="let player of game.players">
+            {{ player.name }}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Раунд {{ game.rounds.length }}</td>
+          <td *ngFor="let player of game.players">
+            <input type="number" [(ngModel)]="player.rounds[game.rounds[game.rounds.length - 1].id].score">
+          </td>
+        </tr>
+        <tr class="table-success">
+          <td><b>Итого:</b></td>
+          <td *ngFor="let player of game.players">
+            {{ player.totalScore }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 *ngIf="game.rounds.length" class="text-center">
+      <b>Статистика</b>
+    </h3>
+    <table class="table table-hover table-bordered table-striped table-sm">
       <thead>
         <tr>
           <th>№</th>
           <th *ngFor="let player of game.players">
             <input type="text" [(ngModel)]="player.name">
-<!--            {{ player.name }}-->
           </th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let round of game.rounds">
           <td>{{ round.id }}</td>
-          <td *ngFor="let player of game.players">{{ player.rounds[round.id].score }}</td>
+          <td *ngFor="let player of game.players">
+            <input
+              (blur)="updatePlayersTotalScore()"
+              [(ngModel)]="player.rounds[round.id].score"
+              type="number">
+          </td>
         </tr>
       </tbody>
     </table>
