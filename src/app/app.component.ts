@@ -18,7 +18,10 @@ interface IPlayer {
   id: number;
   name?: string;
   rounds?: {[roundID: number]: {id: number; score: number}};
-  totalScore?: 0;
+  totalScore?: number;
+  totalScoreInPercentages?: number;
+  place?: number;
+  color?: string;
 }
 
 @Component({
@@ -91,6 +94,8 @@ export class AppComponent {
   }
 
   updatePlayersTotalScore(): void {
+    const colors = ['warn', 'accent', 'primary'];
+
     this.game.players
       .forEach(player => {
         player.totalScore = Object.keys(player.rounds)
@@ -99,5 +104,12 @@ export class AppComponent {
             return total = total + Number(next.score);
           }, 0);
       });
+    [...this.game.players].sort((a, b) => {
+      return b.totalScore - a.totalScore;
+    }).forEach((player, index) => {
+      player.place = index + 1;
+      player.color = colors[index];
+      player.totalScoreInPercentages = player.totalScore * 100 / this.game.playUntil;
+    });
   }
 }

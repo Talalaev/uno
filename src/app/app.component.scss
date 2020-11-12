@@ -29,4 +29,18 @@
   .table-dark input {
     color: #fff;
   }
+
+  .uno-player-name {
+    position: relative;
+
+    .uno-progress-line {
+      position: absolute;
+      bottom: 0;
+      height: 2px;
+      left: 0;
+      right: 0;
+      background: #68a9f0;
+      transition: right 0.25s ease 0s;
+    }
+  }
 }
