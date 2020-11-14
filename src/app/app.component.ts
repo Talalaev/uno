@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateGameComponent } from './components/create-game/create-game.component';
 import { filter } from 'rxjs/operators';
+import { FinishGameComponent } from './components/finish-game/finish-game.component';
+import { GameResultComponent } from './components/game-result/game-result.component';
 
 
-interface IGame {
+export interface IGame {
   name?: string;
   data?: Date;
   place?: string;
@@ -14,7 +16,7 @@ interface IGame {
   isFinished?: boolean;
 }
 
-interface IPlayer {
+export interface IPlayer {
   id: number;
   name?: string;
   rounds?: {[roundID: number]: {id: number; score: number}};
@@ -29,7 +31,7 @@ interface IPlayer {
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   game: any = {
     isFinished: false,
   };
@@ -38,9 +40,12 @@ export class AppComponent {
     public dialog: MatDialog
   ) {}
 
-  // get gameTotal() {
-  //   return this.game.players.
-  // }
+  ngOnInit(): void {
+    const savedGame = JSON.parse(localStorage.getItem('uno-saved-game'));
+    if (savedGame) {
+      this.game = savedGame;
+    }
+  }
 
   public onCreateGame(): void {
     this.dialog.open(CreateGameComponent, {
@@ -75,6 +80,7 @@ export class AppComponent {
         rounds: {}
       });
     }
+    this.saveGame();
   }
 
   addPlayer(player): void {
@@ -91,25 +97,72 @@ export class AppComponent {
     this.game.players.forEach(player => player.rounds[nextRoundID] = {id: nextRoundID, score: 0});
 
     this.updatePlayersTotalScore();
+    this.saveGame();
   }
 
   updatePlayersTotalScore(): void {
     const colors = ['warn', 'accent', 'primary'];
+    let isItOver = false;
 
     this.game.players
       .forEach(player => {
-        player.totalScore = Object.keys(player.rounds)
+        const totalScore = Object.keys(player.rounds)
           .map(index => player.rounds[index])
           .reduce((total, next) => {
             return total = total + Number(next.score);
           }, 0);
+        player.totalScore = totalScore;
+        isItOver = isItOver ? isItOver : this.game.playUntil < totalScore;
       });
-    [...this.game.players].sort((a, b) => {
-      return b.totalScore - a.totalScore;
-    }).forEach((player, index) => {
-      player.place = index + 1;
-      player.color = colors[index];
-      player.totalScoreInPercentages = player.totalScore * 100 / this.game.playUntil;
-    });
+
+    [...this.game.players]
+      .sort((a, b) => b.totalScore - a.totalScore)
+      .forEach((player, index) => {
+        player.place = index + 1;
+        const colorIndex = index > 2 ? 2 : index;
+        player.color = colors[colorIndex];
+        const totalScoreInPercentages = player.totalScore * 100 / this.game.playUntil;
+        player.totalScoreInPercentages = totalScoreInPercentages >= 100 ? 100 : totalScoreInPercentages;
+      });
+
+    if (isItOver) {
+      this.showGameResult();
+    }
+  }
+
+  saveGame(): void {
+    localStorage.setItem('uno-saved-game', JSON.stringify(this.game));
+  }
+
+  onFinishGameClick(): void {
+    this.dialog.open(FinishGameComponent, {
+      // height: '400px',
+      width: '400px',
+      data: this.game
+    })
+      .afterClosed()
+      .pipe(filter(v => !!v))
+      .subscribe(v => {
+        this.game = {
+          isFinished: false,
+        };
+        localStorage.removeItem('uno-saved-game');
+      });
+  }
+
+  showGameResult(): void {
+    this.dialog.open(GameResultComponent, {
+      // height: '400px',
+      width: '600px',
+      data: this.game
+    })
+      .afterClosed()
+      .pipe(filter(v => !!v))
+      .subscribe(v => {
+        this.game = {
+          isFinished: false,
+        };
+        localStorage.removeItem('uno-saved-game');
+      });
   }
 }

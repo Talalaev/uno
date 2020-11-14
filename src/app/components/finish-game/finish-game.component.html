@@ -1,0 +1,13 @@
+<mat-dialog-content>
+  <h2>Текущая игра не будет сохранена!</h2>
+  <span>Если вы хотите доиграть позже, просто закройте вкладку или браузер.</span>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button
+    mat-button
+    mat-dialog-close>Отмена</button>
+  <button
+    mat-flat-button
+    [mat-dialog-close]="true"
+    color="warn">Завершить</button>
+</mat-dialog-actions>

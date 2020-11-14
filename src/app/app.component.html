@@ -26,6 +26,7 @@
         <button
           *ngIf="game.rounds.length"
           mat-flat-button
+          (click)="onFinishGameClick()"
           color="warn">
           Завершить
         </button>

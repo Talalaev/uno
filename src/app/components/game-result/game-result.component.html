@@ -1,0 +1,28 @@
+<mat-dialog-content>
+  <h2>Итог игры</h2>
+  <mat-list class="mb-2">
+    <mat-list-item
+      *ngFor="let player of sortedPlayers"
+      [matBadge]="player.place"
+      [matBadgeColor]="player.color"
+      [matBadgePosition]="'before'">
+      <mat-icon mat-list-icon>person</mat-icon>
+      <div mat-line class="d-flex justify-content-between">
+        <div>
+<!--          <b>{{ player.place }}</b>-->
+          {{ player.name }}
+        </div>
+        <div>{{ player.totalScore }}</div>
+      </div>
+    </mat-list-item>
+  </mat-list>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button
+    mat-button
+    mat-dialog-close>Закрыть</button>
+  <button
+    mat-flat-button
+    [mat-dialog-close]="true"
+    color="warn">Завершить</button>
+</mat-dialog-actions>

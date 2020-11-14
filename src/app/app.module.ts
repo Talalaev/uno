@@ -15,11 +15,16 @@ import { CommonModule } from '@angular/common';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatBadgeModule } from '@angular/material/badge';
+import { FinishGameComponent } from './components/finish-game/finish-game.component';
+import { GameResultComponent } from './components/game-result/game-result.component';
+import { MatListModule } from '@angular/material/list';
 
 @NgModule({
   declarations: [
     AppComponent,
-    CreateGameComponent
+    CreateGameComponent,
+    FinishGameComponent,
+    GameResultComponent
   ],
   imports: [
     CommonModule,
@@ -34,6 +39,7 @@ import { MatBadgeModule } from '@angular/material/badge';
     MatSelectModule,
     MatButtonToggleModule,
     MatBadgeModule,
+    MatListModule,
     FormsModule,
     ReactiveFormsModule
   ],
