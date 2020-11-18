@@ -4,6 +4,8 @@ import { CreateGameComponent } from './components/create-game/create-game.compon
 import { filter } from 'rxjs/operators';
 import { FinishGameComponent } from './components/finish-game/finish-game.component';
 import { GameResultComponent } from './components/game-result/game-result.component';
+import * as Chance from 'chance';
+const chance = new Chance();
 
 
 export interface IGame {
@@ -13,13 +15,14 @@ export interface IGame {
   players?: Array<IPlayer>;
   rounds?: Array<{id: number}>;
   playUntil?: number;
+  distributor?: boolean;
   isFinished?: boolean;
 }
 
 export interface IPlayer {
   id: number;
   name?: string;
-  rounds?: {[roundID: number]: {id: number; score: number}};
+  rounds?: {[roundID: number]: {id: number; score: number; distributor: boolean}};
   totalScore?: number;
   totalScoreInPercentages?: number;
   place?: number;
@@ -72,12 +75,14 @@ export class AppComponent implements OnInit {
     this.game.players = [];
     this.game.rounds = [];
     this.game.playUntil = playUntil;
+    const distributorID = chance.integer({ min: 1, max: playersCount });
 
     for (let i = 1; i <= playersCount; i++) {
       this.addPlayer({
         id: i,
         name: `нет имени ${i}`,
-        rounds: {}
+        rounds: {},
+        distributor: i === distributorID
       });
     }
     this.saveGame();
@@ -94,7 +99,11 @@ export class AppComponent implements OnInit {
   nextRound(): void {
     const nextRoundID = this.game.rounds.length + 1;
     this.game.rounds.push({id: nextRoundID});
-    this.game.players.forEach(player => player.rounds[nextRoundID] = {id: nextRoundID, score: 0});
+    this.game.players.forEach(player => player.rounds[nextRoundID] = {
+      id: nextRoundID,
+      score: 0,
+      distributor: false
+    });
 
     this.updatePlayersTotalScore();
     this.saveGame();
@@ -103,6 +112,11 @@ export class AppComponent implements OnInit {
   updatePlayersTotalScore(): void {
     const colors = ['warn', 'accent', 'primary'];
     let isItOver = false;
+    let distributorID = 1;
+    let maxScore = 0;
+    let lastRoundId = this.game.rounds[this.game.rounds.length - 1].id;
+    lastRoundId = this.game.rounds.length === 1 ? 1 : lastRoundId - 1;
+    console.log(this.game.players);
 
     this.game.players
       .forEach(player => {
@@ -112,7 +126,18 @@ export class AppComponent implements OnInit {
             return total = total + Number(next.score);
           }, 0);
         player.totalScore = totalScore;
-        isItOver = isItOver ? isItOver : this.game.playUntil < totalScore;
+        isItOver = isItOver ? isItOver : this.game.playUntil <= totalScore;
+
+        const lastRoundPlayerScore = player.rounds[lastRoundId].score;
+        if (maxScore < lastRoundPlayerScore) {
+          maxScore = lastRoundPlayerScore;
+          distributorID = player.id;
+        }
+      });
+    this.game.players
+      .forEach(player => {
+        player.distributor = player.id === distributorID;
+        player.rounds[lastRoundId].distributor = player.id === distributorID;
       });
 
     [...this.game.players]

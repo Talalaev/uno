@@ -47,7 +47,11 @@
       <thead>
         <tr class="table-active">
           <th>№</th>
-          <th *ngFor="let player of game.players"class="uno-player-name">
+          <th
+            *ngFor="let player of game.players"
+            [class.uno-distributor--show]="player.distributor"
+            class="uno-player-name uno-distributor">
+            <mat-icon class="uno-distributor__icon text-success">flag</mat-icon>
             <span
               [ngStyle]="{right: 100 - player.totalScoreInPercentages + '%'}"
               class="uno-progress-line"></span>

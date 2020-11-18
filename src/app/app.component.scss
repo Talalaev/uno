@@ -43,4 +43,23 @@
       transition: right 0.25s ease 0s;
     }
   }
+
+  .uno-distributor {
+    position: relative;
+
+    .uno-distributor__icon {
+      display: none;
+      position: absolute;
+      top: -20px;
+      left: 0;
+      right: 0;
+      padding: 0 12px;
+    }
+
+    &.uno-distributor--show {
+      .uno-distributor__icon {
+        display: block;
+      }
+    }
+  }
 }
