@@ -21,6 +21,8 @@ import { MatListModule } from '@angular/material/list';
 import { MatRippleModule } from '@angular/material/core';
 import { MatMenuModule } from '@angular/material/menu';
 import { GameSourceComponent } from './components/game-source/game-source.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 
 class MyErrorHandler implements ErrorHandler {
@@ -55,7 +57,8 @@ class MyErrorHandler implements ErrorHandler {
     MatRippleModule,
     MatMenuModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [{provide: ErrorHandler, useClass: MyErrorHandler}],
   bootstrap: [AppComponent]
