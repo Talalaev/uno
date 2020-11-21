@@ -1,5 +1,8 @@
 <mat-dialog-content>
-  <h2>Итог игры</h2>
+  <h2>
+    Итог игры
+    <span class="mat-small ml-2">{{ game.date | date:"HH:mm, dd.MM.yyyy" }}</span>
+  </h2>
   <mat-list class="mb-2">
     <mat-list-item
       *ngFor="let player of sortedPlayers"
@@ -9,10 +12,10 @@
       <mat-icon mat-list-icon>person</mat-icon>
       <div mat-line class="d-flex justify-content-between">
         <div>
-<!--          <b>{{ player.place }}</b>-->
           {{ player.name }}
         </div>
-        <div>{{ player.totalScore }}</div>
+        <div>Очки: {{ player.totalScore }}</div>
+        <div>Кол-во сдач: {{ player.lostRounds }}</div>
       </div>
     </mat-list-item>
   </mat-list>

@@ -1,0 +1,15 @@
+<mat-dialog-content>
+  <h2>
+    Загрузить/Скачать игру
+  </h2>
+  <textarea [(ngModel)]="sourceObject" name="" id="" cols="30" rows="10"></textarea>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button
+    mat-button
+    mat-dialog-close>Закрыть</button>
+  <button
+    mat-flat-button
+    [mat-dialog-close]="sourceObject"
+    color="primary">Сохранить</button>
+</mat-dialog-actions>

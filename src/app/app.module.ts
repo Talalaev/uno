@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { ErrorHandler, NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -18,13 +18,25 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { FinishGameComponent } from './components/finish-game/finish-game.component';
 import { GameResultComponent } from './components/game-result/game-result.component';
 import { MatListModule } from '@angular/material/list';
+import { MatRippleModule } from '@angular/material/core';
+import { MatMenuModule } from '@angular/material/menu';
+import { GameSourceComponent } from './components/game-source/game-source.component';
+
+
+class MyErrorHandler implements ErrorHandler {
+  handleError(error): void {
+    localStorage.removeItem('uno-saved-game');
+    location.reload();
+  }
+}
 
 @NgModule({
   declarations: [
     AppComponent,
     CreateGameComponent,
     FinishGameComponent,
-    GameResultComponent
+    GameResultComponent,
+    GameSourceComponent
   ],
   imports: [
     CommonModule,
@@ -40,10 +52,12 @@ import { MatListModule } from '@angular/material/list';
     MatButtonToggleModule,
     MatBadgeModule,
     MatListModule,
+    MatRippleModule,
+    MatMenuModule,
     FormsModule,
     ReactiveFormsModule
   ],
-  providers: [],
+  providers: [{provide: ErrorHandler, useClass: MyErrorHandler}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

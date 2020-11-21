@@ -1,16 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateGameComponent } from './components/create-game/create-game.component';
 import { filter } from 'rxjs/operators';
 import { FinishGameComponent } from './components/finish-game/finish-game.component';
 import { GameResultComponent } from './components/game-result/game-result.component';
 import * as Chance from 'chance';
+import { GameSourceComponent } from './components/game-source/game-source.component';
 const chance = new Chance();
 
 
 export interface IGame {
   name?: string;
-  data?: Date;
+  date?: Date;
   place?: string;
   players?: Array<IPlayer>;
   rounds?: Array<{id: number}>;
@@ -25,6 +26,7 @@ export interface IPlayer {
   rounds?: {[roundID: number]: {id: number; score: number; distributor: boolean}};
   totalScore?: number;
   totalScoreInPercentages?: number;
+  lostRounds: number;
   place?: number;
   color?: string;
 }
@@ -35,9 +37,12 @@ export interface IPlayer {
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
+  @ViewChild('ripple') ripple;
   game: any = {
     isFinished: false,
   };
+
+  lockNextRound = false;
 
   constructor(
     public dialog: MatDialog
@@ -82,7 +87,8 @@ export class AppComponent implements OnInit {
         id: i,
         name: `нет имени ${i}`,
         rounds: {},
-        distributor: i === distributorID
+        distributor: i === distributorID,
+        lostRounds: 0
       });
     }
     this.saveGame();
@@ -97,6 +103,11 @@ export class AppComponent implements OnInit {
   }
 
   nextRound(): void {
+    if (this.lockNextRound) {
+      return;
+    }
+    this.lockNextRound = true;
+    setTimeout(() => this.lockNextRound = false, 500);
     const nextRoundID = this.game.rounds.length + 1;
     this.game.rounds.push({id: nextRoundID});
     this.game.players.forEach(player => player.rounds[nextRoundID] = {
@@ -107,6 +118,7 @@ export class AppComponent implements OnInit {
 
     this.updatePlayersTotalScore();
     this.saveGame();
+    this.ripple.launch();
   }
 
   updatePlayersTotalScore(): void {
@@ -116,7 +128,6 @@ export class AppComponent implements OnInit {
     let maxScore = 0;
     let lastRoundId = this.game.rounds[this.game.rounds.length - 1].id;
     lastRoundId = this.game.rounds.length === 1 ? 1 : lastRoundId - 1;
-    console.log(this.game.players);
 
     this.game.players
       .forEach(player => {
@@ -176,6 +187,17 @@ export class AppComponent implements OnInit {
   }
 
   showGameResult(): void {
+    this.game.players
+      .forEach(player => {
+        player.lostRounds = 0;
+        player.lostRounds = this.game.rounds.reduce((result, round) => {
+          if (player.rounds[round.id].distributor) {
+            result++;
+          }
+
+          return result;
+        }, 0);
+      });
     this.dialog.open(GameResultComponent, {
       // height: '400px',
       width: '600px',
@@ -188,6 +210,26 @@ export class AppComponent implements OnInit {
           isFinished: false,
         };
         localStorage.removeItem('uno-saved-game');
+      });
+  }
+
+  onSourceClick(): void {
+    this.dialog.open(GameSourceComponent, {
+      // height: '400px',
+      width: '600px',
+      data: this.game
+    })
+      .afterClosed()
+      .pipe(filter(v => !!v))
+      .subscribe(game => {
+        let newGame;
+        try {
+          newGame = JSON.parse(game);
+          this.game = newGame;
+          this.saveGame();
+        } catch (e) {
+          console.log(e);
+        }
       });
   }
 }

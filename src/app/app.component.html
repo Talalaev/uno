@@ -1,4 +1,23 @@
 <div class="uno-main-page">
+  <div
+    *ngIf="game.players"
+    #ripple="matRipple"
+    matRipple
+    [matRippleCentered]="true"
+    [matRippleDisabled]="true"
+    [matRippleUnbounded]="false"
+    [matRippleColor]="'#ff40814f'"
+    [ngStyle]="{'zIndex': lockNextRound ? 1000 : -1}"
+    class="uno-ripple">
+    <div
+      [hidden]="lockNextRound === false"
+      class="uno-ripple__current-round noselect">
+      Раунд
+      <br>
+      {{ game.rounds.length }}
+    </div>
+  </div>
+
   <div *ngIf="!game.players" class="uno-splash">
     <img
       alt="Uno"
@@ -8,7 +27,6 @@
       <button (click)="onCreateGame()" mat-raised-button color="accent">Создать</button>
     </div>
   </div>
-
   <div *ngIf="game.players" class="uno-game">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h2>
@@ -23,6 +41,16 @@
           color="primary">
           Начать
         </button>
+        <button
+          mat-icon-button
+          *ngIf="game.rounds.length"
+          [matMenuTriggerFor]="menu"
+          class="mr-2">
+          <mat-icon>settings</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button (click)="onSourceClick()" mat-menu-item><mat-icon>source</mat-icon>Исходник</button>
+        </mat-menu>
         <button
           *ngIf="game.rounds.length"
           mat-flat-button
@@ -46,7 +74,7 @@
     <table *ngIf="game.rounds.length" class="table">
       <thead>
         <tr class="table-active">
-          <th>№</th>
+          <th>Раунд</th>
           <th
             *ngFor="let player of game.players"
             [class.uno-distributor--show]="player.distributor"
@@ -66,14 +94,17 @@
       </thead>
       <tbody>
         <tr>
-          <td>Раунд {{ game.rounds.length }}</td>
-          <td *ngFor="let player of game.players">
-            <input type="number" [(ngModel)]="player.rounds[game.rounds[game.rounds.length - 1].id].score">
+          <td>{{ game.rounds.length }}</td>
+          <td *ngFor="let player of game.players" class="uno-font-size-big">
+            <input
+              (focus)="player.rounds[game.rounds[game.rounds.length - 1].id].score = null"
+              [(ngModel)]="player.rounds[game.rounds[game.rounds.length - 1].id].score"
+              type="number">
           </td>
         </tr>
-        <tr class="table-success">
+        <tr class="uno-total-score table-success">
           <td><b>Итого:</b></td>
-          <td *ngFor="let player of game.players">
+          <td *ngFor="let player of game.players" class="uno-font-size-big">
             {{ player.totalScore }}
           </td>
         </tr>
@@ -94,7 +125,7 @@
       <tbody>
         <tr *ngFor="let round of game.rounds">
           <td>{{ round.id }}</td>
-          <td *ngFor="let player of game.players">
+          <td *ngFor="let player of game.players" [class.bg-warning]="player.rounds[round.id].distributor">
             <input
               (blur)="updatePlayersTotalScore()"
               [(ngModel)]="player.rounds[round.id].score"
