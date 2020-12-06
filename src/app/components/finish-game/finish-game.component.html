@@ -7,6 +7,10 @@
     mat-button
     mat-dialog-close>Отмена</button>
   <button
+    mat-button
+    [mat-dialog-close]="{repeat: true}"
+    color="accent">С начала</button>
+  <button
     mat-flat-button
     [mat-dialog-close]="true"
     color="warn">Завершить</button>

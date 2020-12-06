@@ -184,11 +184,10 @@ export class AppComponent implements OnInit {
       .afterClosed()
       .pipe(filter(v => !!v))
       .subscribe(v => {
-        // console.log('v', v);
-        // if (v.repeat) {
-        //   console.log('game', this.game);
-        //   return;
-        // }
+        if (v.repeat) {
+          this.restartGame();
+          return;
+        }
 
         this.game = {
           isFinished: false,
@@ -217,11 +216,33 @@ export class AppComponent implements OnInit {
       .afterClosed()
       .pipe(filter(v => !!v))
       .subscribe(v => {
+        if (v.repeat) {
+          this.restartGame();
+          return;
+        }
+
         this.game = {
           isFinished: false,
         };
         localStorage.removeItem('uno-saved-game');
       });
+  }
+
+  restartGame(): void {
+    const playersCount = this.game.players.length;
+    const distributorID = [1, 2, 3].map(i => {
+      return chance.integer({ min: 1, max: Number(playersCount) });
+    })[2];
+
+    this.game.date = new Date();
+    this.game.rounds = [];
+    this.game.players.forEach((player, index) => {
+      player.rounds = {};
+      player.lostRounds = 0;
+      player.distributor = (index + 1) === distributorID;
+    });
+
+    this.nextRound(true);
   }
 
   onSourceClick(): void {
