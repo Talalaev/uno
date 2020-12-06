@@ -45,7 +45,7 @@ export class AppComponent implements OnInit {
   lockNextRound = false;
 
   constructor(
-    public dialog: MatDialog
+    public dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
@@ -80,7 +80,9 @@ export class AppComponent implements OnInit {
     this.game.players = [];
     this.game.rounds = [];
     this.game.playUntil = playUntil;
-    const distributorID = chance.integer({ min: 1, max: playersCount });
+    const distributorID = [1, 2, 3].map(i => {
+      return chance.integer({ min: 1, max: Number(playersCount) });
+    })[2];
 
     for (let i = 1; i <= playersCount; i++) {
       this.addPlayer({
@@ -91,6 +93,7 @@ export class AppComponent implements OnInit {
         lostRounds: 0
       });
     }
+
     this.saveGame();
   }
 
@@ -99,10 +102,10 @@ export class AppComponent implements OnInit {
   }
 
   onStartGame(): void {
-    this.nextRound();
+    this.nextRound(true);
   }
 
-  nextRound(): void {
+  nextRound(firstRound: boolean = false): void {
     if (this.lockNextRound) {
       return;
     }
@@ -113,15 +116,15 @@ export class AppComponent implements OnInit {
     this.game.players.forEach(player => player.rounds[nextRoundID] = {
       id: nextRoundID,
       score: 0,
-      distributor: false
+      distributor: player.distributor
     });
 
-    this.updatePlayersTotalScore();
+    this.updatePlayersTotalScore(firstRound);
     this.saveGame();
     this.ripple.launch();
   }
 
-  updatePlayersTotalScore(): void {
+  updatePlayersTotalScore(firstRound: boolean = false): void {
     const colors = ['warn', 'accent', 'primary'];
     let isItOver = false;
     let distributorID = 1;
@@ -145,11 +148,13 @@ export class AppComponent implements OnInit {
           distributorID = player.id;
         }
       });
-    this.game.players
-      .forEach(player => {
-        player.distributor = player.id === distributorID;
-        player.rounds[lastRoundId].distributor = player.id === distributorID;
-      });
+    if (firstRound === false) {
+      this.game.players
+        .forEach(player => {
+          player.distributor = player.id === distributorID;
+          player.rounds[lastRoundId].distributor = player.id === distributorID;
+        });
+    }
 
     [...this.game.players]
       .sort((a, b) => b.totalScore - a.totalScore)
@@ -179,6 +184,12 @@ export class AppComponent implements OnInit {
       .afterClosed()
       .pipe(filter(v => !!v))
       .subscribe(v => {
+        // console.log('v', v);
+        // if (v.repeat) {
+        //   console.log('game', this.game);
+        //   return;
+        // }
+
         this.game = {
           isFinished: false,
         };
