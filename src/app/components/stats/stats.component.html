@@ -1,7 +1,10 @@
 <div class="uno-stats m-2">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="m-0">Трансляции</h1>
-    <button mat-icon-button (click)="updateList()"><mat-icon>refresh</mat-icon></button>
+    <div>
+      <button mat-icon-button [routerLink]="'/'"><mat-icon>home</mat-icon></button>
+      <button mat-icon-button (click)="updateList()"><mat-icon>refresh</mat-icon></button>
+    </div>
   </div>
   <h3 *ngIf="gamesList.length == 0" class="text-center">Сейчас нет игр</h3>
   <mat-card *ngFor="let game of gamesList" class="mb-3">
