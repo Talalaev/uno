@@ -72,4 +72,4 @@ api.delete('/delete-games', function (req, res) {
 });
 
 
-api.listen(process.env.PORT || 3000);
+api.listen(3000);
