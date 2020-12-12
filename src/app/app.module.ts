@@ -23,6 +23,10 @@ import { MatMenuModule } from '@angular/material/menu';
 import { GameSourceComponent } from './components/game-source/game-source.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { StatsComponent } from './components/stats/stats.component';
+import { HttpClientModule } from '@angular/common/http';
+import { GameComponent } from './components/game/game.component';
+import { MatCardModule } from '@angular/material/card';
 
 
 class MyErrorHandler implements ErrorHandler {
@@ -38,13 +42,16 @@ class MyErrorHandler implements ErrorHandler {
     CreateGameComponent,
     FinishGameComponent,
     GameResultComponent,
-    GameSourceComponent
+    GameSourceComponent,
+    StatsComponent,
+    GameComponent
   ],
   imports: [
     CommonModule,
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    HttpClientModule,
     MatButtonModule,
     MatIconModule,
     MatDialogModule,
@@ -56,6 +63,7 @@ class MyErrorHandler implements ErrorHandler {
     MatListModule,
     MatRippleModule,
     MatMenuModule,
+    MatCardModule,
     FormsModule,
     ReactiveFormsModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })

@@ -1,0 +1,64 @@
+<div class="uno-stats m-2">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="m-0">Трансляции</h1>
+    <button mat-icon-button (click)="updateList()"><mat-icon>refresh</mat-icon></button>
+  </div>
+  <h3 *ngIf="gamesList.length == 0" class="text-center">Сейчас нет игр</h3>
+  <mat-card *ngFor="let game of gamesList" class="mb-3">
+    <div>
+      <b class="d-flex justify-content-between align-items-center">
+        <span>
+          Имя: {{ game.name }}.
+          до {{ game.playUntil }}
+          <span *ngIf="game.isFinished" class="text-danger">(Завершена)</span>
+        </span>
+        <span>Место: {{ game.place }}</span>
+      </b>
+    </div>
+    <small>{{ game.date | date:"HH:mm, dd.MM.yyyy" }}</small>
+    <mat-card-content class="mt-2">
+      <table *ngIf="game.rounds.length" class="table">
+        <thead>
+        <tr>
+          <th>Раунд</th>
+          <th
+            *ngFor="let player of game.players"
+            [class.uno-distributor--show]="player.distributor"
+            class="uno-distributor">
+            <mat-icon class="uno-distributor__icon text-success">flag</mat-icon>
+            <span
+              [matBadge]="player.place"
+              [matBadgeColor]="player.color"
+              class="px-2">
+              {{ player.name }}
+            </span>
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>{{ game.rounds.length }}</td>
+          <td *ngFor="let player of game.players" class="uno-font-size-big uno-player-name">
+            <span class="uno-progress-percentages">{{ player.totalScoreInPercentages + '%' }}</span>
+            <span
+              [ngStyle]="{right: 100 - player.totalScoreInPercentages + '%'}"
+              class="uno-progress-line"></span>
+          </td>
+        </tr>
+        <tr class="uno-total-score">
+          <td><b>Итого:</b></td>
+          <td *ngFor="let player of game.players" class="uno-font-size-big">
+            {{ player.totalScore }}
+            <mat-icon
+              *ngIf="game.isFinished && player.totalScoreInPercentages >= 100"
+              class="uno-finished-game text-danger">
+              flag
+            </mat-icon>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </mat-card-content>
+  </mat-card>
+
+</div>

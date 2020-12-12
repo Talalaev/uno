@@ -1,0 +1,41 @@
+.uno-distributor {
+  position: relative;
+
+  .uno-distributor__icon {
+    display: none;
+    position: absolute;
+    top: -20px;
+    left: 0;
+    right: 0;
+    padding: 0 12px;
+  }
+
+  &.uno-distributor--show {
+    .uno-distributor__icon {
+      display: block;
+    }
+  }
+}
+
+.uno-player-name {
+  position: relative;
+
+  .uno-progress-percentages {
+    position: relative;
+    z-index: 1;
+  }
+
+  .uno-progress-line {
+    position: absolute;
+    bottom: 0;
+    height: 100%;
+    left: 0;
+    right: 0;
+    background: #68a9f054;
+    transition: all 0.5s ease 0s;
+  }
+}
+
+.uno-finished-game {
+  position: absolute;
+}

@@ -1,0 +1,100 @@
+.uno-main-page {
+  padding: 0 12px;
+  height: 100%;
+  position: relative;
+
+  .uno-ripple {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+
+    .uno-ripple__current-round {
+      text-align: center;
+      color: #515151;
+      //text-shadow: 0 0 2px #000;
+      z-index: 1009;
+      font-size: 112px;
+      line-height: 112px;
+      margin: 55px;
+    }
+  }
+
+  .uno-splash {
+    text-align: center;
+
+    img {
+      width: 30%;
+    }
+  }
+
+  table > thead > tr > th:first-child {
+    min-width: 80px;
+  }
+
+  input {
+    border: transparent;
+    width: 100%;
+    background: transparent;
+    border: transparent;
+    padding: 0;
+
+    &:focus, &:active {
+      border: transparent;
+      outline: transparent;
+    }
+  }
+
+  .table-dark input {
+    color: #fff;
+  }
+
+  .uno-player-name {
+    position: relative;
+
+    .uno-progress-line {
+      position: absolute;
+      bottom: 0;
+      height: 2px;
+      left: 0;
+      right: 0;
+      background: #68a9f0;
+      transition: right 0.25s ease 0s;
+    }
+  }
+
+  .uno-distributor {
+    position: relative;
+
+    .uno-distributor__icon {
+      display: none;
+      position: absolute;
+      top: -20px;
+      left: 0;
+      right: 0;
+      padding: 0 12px;
+    }
+
+    &.uno-distributor--show {
+      .uno-distributor__icon {
+        display: block;
+      }
+    }
+  }
+}
+
+.uno-font-size-big {
+  font-size: 22px;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
