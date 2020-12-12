@@ -29,7 +29,7 @@ export class StatsComponent implements OnInit, OnDestroy {
   }
 
   getGames() {
-    return fetch('http://localhost:3000/games', {
+    return fetch('/api/games', {
       mode: 'cors',
       method: 'GET',
       headers: {

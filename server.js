@@ -8,27 +8,28 @@ const api = express();
 
 // Serve only the static files form the dist directory
 app.use(express.static(__dirname + '/dist/uno'));
-
-app.get('/*', function(req,res) {
-
-  res.sendFile(path.join(__dirname+'/dist/uno/index.html'));
-});
-
-// Start the app by listening on the default Heroku port
-app.listen(process.env.PORT || 8080);
-
-api.use(function(req, res, next) {
+app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
-api.use(express.json())
-api.use(cors());
-api.options('*', cors());
+app.use(express.json())
+app.use(cors());
+app.options('*', cors());
 
 let games = [];
 
-api.get('/games', function(req,res) {
+app.get('/', function(req,res) {
+
+  res.sendFile(path.join(__dirname+'/dist/uno/index.html'));
+});
+
+app.get('/app', function(req,res) {
+
+  res.sendFile(path.join(__dirname+'/dist/uno/index.html'));
+});
+
+app.get('/api/games', function(req,res) {
   res.json(games.map(game => game.game));
 });
 
@@ -38,7 +39,7 @@ setInterval(() => {
   })
 }, 1000 * 60 * 11);
 
-api.post('/add-game', function (req, res) {
+app.post('/api/add-game', function (req, res) {
   const newGame = req.body;
   const isNewGame = !games.find(game => game.game.id === newGame.id);
 
@@ -57,7 +58,7 @@ api.post('/add-game', function (req, res) {
   res.json({ok: true});
 });
 
-api.delete('/finish-game', function (req, res) {
+app.delete('/api/finish-game', function (req, res) {
   const newGame = req.body;
 
   games = games.filter(game => game.game.id !== newGame.id);
@@ -65,11 +66,11 @@ api.delete('/finish-game', function (req, res) {
   res.json({ok: true});
 });
 
-api.delete('/delete-games', function (req, res) {
+app.delete('/api/delete-games', function (req, res) {
   games = [];
 
   res.json({ok: true});
 });
 
-
-api.listen(3000);
+// Start the app by listening on the default Heroku port
+app.listen(process.env.PORT || 8080);

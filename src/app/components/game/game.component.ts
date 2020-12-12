@@ -272,7 +272,7 @@ export class GameComponent implements OnInit {
   }
 
   addGame(game): void {
-    fetch('http://localhost:3000/add-game', {
+    fetch('/api/add-game', {
       mode: 'cors',
       method: 'POST',
       body: JSON.stringify(game),
@@ -288,7 +288,7 @@ export class GameComponent implements OnInit {
   }
 
   finishGame(game): void {
-    fetch('http://localhost:3000/finish-game', {
+    fetch('/api/finish-game', {
       mode: 'cors',
       method: 'DELETE',
       body: JSON.stringify(game),
