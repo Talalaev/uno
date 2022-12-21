@@ -26,10 +26,10 @@
     mat-dialog-close>Закрыть</button>
   <button
     mat-button
-    [mat-dialog-close]="{repeat: true}"
+    [mat-dialog-close]="{repeat: true, result: result}"
     color="accent">Еще</button>
   <button
     mat-flat-button
-    [mat-dialog-close]="true"
+    [mat-dialog-close]="{result: result}"
     color="warn">Завершить</button>
 </mat-dialog-actions>

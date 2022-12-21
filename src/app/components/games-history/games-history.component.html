@@ -1,0 +1,87 @@
+<div class="uno-history m-2">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="m-0">Статистика</h1>
+    <div>
+      <button mat-icon-button [routerLink]="'/'"><mat-icon>home</mat-icon></button>
+      <button mat-icon-button (click)="updateList()"><mat-icon>refresh</mat-icon></button>
+    </div>
+  </div>
+
+  <h3 *ngIf="data.length == 0 && !loading" class="text-center">Пусто</h3>
+
+  <mat-progress-bar
+    *ngIf="loading"
+    mode="indeterminate"
+    class="mt-2"></mat-progress-bar>
+
+  <div class="uno-history__all-history-user-stat">
+    <h2>Статистика игроков за все время</h2>
+    <div class="uno-history__cards">
+      <mat-card *ngFor="let userTotalResult of usersTotalResults" class="uno-history__card">
+        <mat-card-header>
+          <div mat-card-avatar><mat-icon>account_circle</mat-icon></div>
+          <mat-card-title>{{ userTotalResult.user.name }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <ul>
+            <li>
+              <span>Проиграно: </span>
+              <b>{{ userTotalResult.lostGames }} раз</b>
+            </li>
+            <li>
+              <span>Сдавал(а) больше всех: </span>
+              <b>{{ userTotalResult.bestDispatcher }} раз</b>
+            </li>
+            <li>
+              <span>Набрал очков за все время: </span>
+              <b>{{ userTotalResult.allTimeScore }} раз</b>
+            </li>
+          </ul>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <div *ngFor="let row of data" class="uno-history__results">
+    <h2>
+      Место: {{ row.club.name }}
+      <span class="mat-small ml-2">{{ row.date | date:"HH:mm, dd.MM.yyyy" }}</span>
+    </h2>
+
+    <table class="table table-hover table-bordered table-striped table-sm">
+      <thead>
+      <tr>
+        <th>№</th>
+        <th>Игрок</th>
+        <th>Очки</th>
+        <th>Кол-во сдач</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let player of row.result">
+        <td style="font-size: 24px; max-width: 40px;">
+          <span
+            [class.bg-danger]="player.place === 1"
+            [class.bg-warning]="player.place === 2"
+            [class.bg-secondary]="player.place > 2"
+            class="badge text-white">
+            {{ player.place }}
+          </span>
+        </td>
+        <td>
+          {{ player.user.name }}
+        </td>
+        <td>{{ player.totalScore }}</td>
+        <td>
+          <span
+            [class.font-weight-bold]="player.dealsCardsOften"
+            [class.text-danger]="player.dealsCardsOften">
+            {{ player.lostRounds }}
+          </span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>

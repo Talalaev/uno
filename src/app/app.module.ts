@@ -27,6 +27,11 @@ import { StatsComponent } from './components/stats/stats.component';
 import { HttpClientModule } from '@angular/common/http';
 import { GameComponent } from './components/game/game.component';
 import { MatCardModule } from '@angular/material/card';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { GamesHistoryComponent } from './components/games-history/games-history.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 
 class MyErrorHandler implements ErrorHandler {
@@ -44,7 +49,8 @@ class MyErrorHandler implements ErrorHandler {
     GameResultComponent,
     GameSourceComponent,
     StatsComponent,
-    GameComponent
+    GameComponent,
+    GamesHistoryComponent
   ],
   imports: [
     CommonModule,
@@ -66,7 +72,12 @@ class MyErrorHandler implements ErrorHandler {
     MatCardModule,
     FormsModule,
     ReactiveFormsModule,
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    HttpClientModule,
+    MatProgressSpinnerModule,
+    MatProgressBarModule,
+    MatCheckboxModule,
+    MatSnackBarModule,
   ],
   providers: [{provide: ErrorHandler, useClass: MyErrorHandler}],
   bootstrap: [AppComponent]

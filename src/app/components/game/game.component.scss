@@ -83,6 +83,19 @@
       }
     }
   }
+
+  .uno-main-page__deleted-header {
+    position: relative;
+    height: 40px;
+    display: flex;
+    align-items: center;
+
+    button {
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+  }
 }
 
 .uno-font-size-big {

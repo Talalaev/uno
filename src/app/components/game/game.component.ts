@@ -6,6 +6,7 @@ import { CreateGameComponent } from '../create-game/create-game.component';
 import { FinishGameComponent } from '../finish-game/finish-game.component';
 import { GameResultComponent } from '../game-result/game-result.component';
 import { GameSourceComponent } from '../game-source/game-source.component';
+import { AppService, IGameTemplate } from '../../app.service';
 const chance = new Chance();
 
 
@@ -42,11 +43,15 @@ export class GameComponent implements OnInit {
   game: any = {
     isFinished: false,
   };
+  hidePin = true;
+  pin;
+  checkingPin = false;
 
   lockNextRound = false;
 
   constructor(
     public dialog: MatDialog,
+    private appService: AppService,
   ) {}
 
   ngOnInit(): void {
@@ -56,7 +61,42 @@ export class GameComponent implements OnInit {
     }
   }
 
-  public onCreateGame(): void {
+  onClickSavePin(): void {
+    this.checkingPin = true;
+    this.appService
+      .checkPin(this.pin)
+      .then(v => {
+        if (v) {
+          this.appService.setPlace(v);
+        }
+      })
+      .then(() => this.appService.loadTemplate())
+      .then(v => this.appService.setGameTemplate(v))
+      .then(() => {
+        if (this.appService.gameTemplate) {
+          this.appService.useTemplate = true;
+        }
+      })
+      .finally(() => this.checkingPin = false);
+  }
+
+  onPlayerDelete(id): void {
+    if (confirm('Вы уверены?')) {
+      this.game.players = this.game.players.filter(item => item.id !== id);
+    }
+  }
+
+  public onCreateGame(template?: IGameTemplate): void {
+    if (template) {
+      return this.createGame({
+        name: template.name,
+        date: new Date(),
+        place: template.place,
+        playersCount: template.players.length,
+        playUntil: template.play_until,
+        players: template.players,
+      });
+    }
     this.dialog.open(CreateGameComponent, {
       // height: '400px',
       width: '600px',
@@ -74,7 +114,8 @@ export class GameComponent implements OnInit {
       });
   }
 
-  createGame({name, date, place, playersCount, playUntil}): void {
+  createGame(payload): void {
+    const {name, date, place, playersCount, playUntil, players} = payload;
     this.game.id = `${chance.integer({ min: 100, max: 10000 })}-${chance.integer({ min: 100, max: 10000 })}-${+(new Date)}`;
     this.game.name = name;
     this.game.date = date;
@@ -86,21 +127,31 @@ export class GameComponent implements OnInit {
       return chance.integer({ min: 1, max: Number(playersCount) });
     })[2];
 
-    for (let i = 1; i <= playersCount; i++) {
-      this.addPlayer({
-        id: i,
-        name: `нет имени ${i}`,
+    if (players) {
+      this.addPlayer(players.map((item, i) => ({
+        id: Number(item.id),
+        name: item.name,
         rounds: {},
         distributor: i === distributorID,
         lostRounds: 0
-      });
+      })));
+    } else {
+      for (let i = 1; i <= playersCount; i++) {
+        this.addPlayer([{
+          id: i,
+          name: `нет имени ${i}`,
+          rounds: {},
+          distributor: i === distributorID,
+          lostRounds: 0
+        }]);
+      }
     }
 
     this.saveGame();
   }
 
   addPlayer(player): void {
-    this.game.players.push(player);
+    this.game.players.push(...player);
   }
 
   onStartGame(): void {
@@ -188,6 +239,12 @@ export class GameComponent implements OnInit {
       .afterClosed()
       .pipe(filter(v => !!v))
       .subscribe(v => {
+        this.appService.saveGameResult({
+          place: this.game.place.id,
+          date: +this.game.date,
+          result: v.result,
+        });
+
         if (v.repeat) {
           this.restartGame();
           return;
@@ -221,6 +278,12 @@ export class GameComponent implements OnInit {
       .afterClosed()
       .pipe(filter(v => !!v))
       .subscribe(v => {
+        this.appService.saveGameResult({
+          place: this.game.place.id,
+          date: +this.game.date,
+          result: v.result,
+        });
+
         if (v.repeat) {
           this.restartGame();
           return;
@@ -272,34 +335,34 @@ export class GameComponent implements OnInit {
   }
 
   addGame(game): void {
-    fetch('/api/add-game', {
-      mode: 'cors',
-      method: 'POST',
-      body: JSON.stringify(game),
-      headers: {
-        'Origin':'*',
-        'Content-Type': 'application/json',
-      }
-    })
-      .then(res => res.json())
-      .catch(e => {
-        console.log(e);
-      });
+    // fetch('/api/add-game', {
+    //   mode: 'cors',
+    //   method: 'POST',
+    //   body: JSON.stringify(game),
+    //   headers: {
+    //     'Origin':'*',
+    //     'Content-Type': 'application/json',
+    //   }
+    // })
+    //   .then(res => res.json())
+    //   .catch(e => {
+    //     console.log(e);
+    //   });
   }
 
   finishGame(game): void {
-    fetch('/api/finish-game', {
-      mode: 'cors',
-      method: 'DELETE',
-      body: JSON.stringify(game),
-      headers: {
-        'Origin':'*',
-        'Content-Type': 'application/json',
-      }
-    })
-      .then(res => res.json())
-      .catch(e => {
-        console.log(e);
-      });
+    // fetch('/api/finish-game', {
+    //   mode: 'cors',
+    //   method: 'DELETE',
+    //   body: JSON.stringify(game),
+    //   headers: {
+    //     'Origin':'*',
+    //     'Content-Type': 'application/json',
+    //   }
+    // })
+    //   .then(res => res.json())
+    //   .catch(e => {
+    //     console.log(e);
+    //   });
   }
 }

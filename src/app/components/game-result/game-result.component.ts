@@ -15,6 +15,15 @@ export class GameResultComponent implements OnInit {
     return [...this.game.players].sort((a, b) => b.totalScore - a.totalScore);
   }
 
+  get result(): Array<{place: number; userId: number; totalScore: number; lostRounds: number; }> {
+    return this.sortedPlayers.map(player => ({
+      place: player.place,
+      userId: player.id,
+      totalScore: player.totalScore,
+      lostRounds: player.lostRounds,
+    }));
+  }
+
   ngOnInit(): void {
   }
 
