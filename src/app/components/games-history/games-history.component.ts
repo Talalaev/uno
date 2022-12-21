@@ -23,6 +23,7 @@ export class GamesHistoryComponent implements OnInit {
 
   updateList(): void {
     this.loading = true;
+    this.usersTotalResults = [];
     this.appService
       .loadStats()
       .then(data => {
